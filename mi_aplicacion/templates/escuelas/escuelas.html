@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block encabezado %}
+  <h2>{{subtitulo}}<a href="{% url 'escuela_alta' %}"><img src="{%static 'images/icons8-más-32.png' %}"></a></h2>
+{% endblock %}
+{% block contenido %}
+
+<div class="w3-container">
+
+  <table class="w3-table-all w3-hoverable">
+    <thead>
+      <tr class="w3-light-grey">
+        <th>Acciones</th>
+        <th>Siglas</th>
+        <th>Nombre</th>
+        
+      </tr>
+    </thead>
+    {% for escuela in escuelas%}
+    <tr>
+      <td><a href="{% url 'escuela_eliminar' escuela.id%}"><img src="{%static 'images/icons8-eliminar-papelera-32.png' %}"></a>
+      <a href="{% url 'escuela_editar' escuela.id%}"><img src="{%static 'images/icons8-crear-nuevo-32.png' %}"></a></td>
+      <td>{{escuela.siglas}}</td>
+      <td>{{escuela.nombre}}</td>
+    </tr>
+    {%endfor%}
+  </table>
+</div>
+{% endblock %}
