@@ -7,6 +7,9 @@ class EscuelaForm(ModelForm):
         fields = ['siglas','nombre']
 
 class MaestroForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MaestroForm, self).__init__(*args, **kwargs)
+        self.fields['escuela'].queryset = Escuela.objects.all()
     class Meta:
         model = Maestro
         fields = ['nombre','escuela','sexo','fecha_nacimiento']
