@@ -100,11 +100,11 @@ class Maestros(View):
 
 class MaestroAlta(View):
     def get(self , request):
-        form = MaestroForm()
         cdx={
         "titulo":"MaestroFormulario",
         "subtitulo":"Formulario para dar de alta a un maestro",
-        "form": form,
+        "form": MaestroForm(),
+        "fondo" : "bg-success p-3"
         
         }
         return render(request , "maestros/crud.html", cdx)
@@ -131,6 +131,7 @@ class MaestroEditar(View):
         "titulo":"Maestros",
         "subtitulo":"Formulario para dar de alta a un maestro",
         "form": form,
+        "fondo" : "bg-warning p-3"
         
         }
         return render(request , "maestros/crud.html", cdx)
@@ -151,6 +152,7 @@ class MaestroEliminar(View):
         "titulo":"Maestros",
         "subtitulo":"Formulario para dar de alta a un maestro",
         "form": form,
+        "fondo" : "bg-danger p-3"
         
         }
         return render(request , "maestros/crud.html", cdx)
