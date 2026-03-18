@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block encabezado %}
+  <h2>{{subtitulo}}<a href="{% url 'alumno_alta' %}"><img src="{%static 'images/icons8-más-32.png' %}"></a></h2>
+{% endblock %}
+{% block contenido %}
+
+<div class="w3-container">
+
+  <table class="w3-table-all w3-hoverable">
+    <thead>
+      <tr class="w3-light-grey">
+        <th>Acciones</th>
+        <th>Nombre</th>
+        <th>Escuela</th>
+        <th>Maestro</th>
+        <th>Sexo</th>
+        <th>Fecha_nacimiento</th>
+      </tr>
+    </thead>
+    {% for alumno in alumnos%}
+    <tr>
+      <td><a href="{% url 'alumno_eliminar' alumno.id%}"><img src="{%static 'images/icons8-eliminar-papelera-32.png' %}"></a>
+      <a href="{% url 'alumno_editar' alumno.id%}"><img src="{%static 'images/icons8-crear-nuevo-32.png' %}"></a></td>
+      <td>{{alumno.nombre}}</td>
+      <td>{{alumno.escuela.siglas}}</td>
+      <td>{{alumno.maestro.nombre}}</td>
+
+      {% if alumno.sexo == 2 %}
+        <td>Masculino</td>
+      {% elif alumno.sexo == 1 %}
+        <td>Femenino</td>
+      {% else %}
+        <td>Otro</td>
+      {% endif %}
+      <td>{{alumno.fecha_nacimiento}}</td>
+    </tr>
+    {%endfor%}
+  </table>
+</div>
+{% endblock %}

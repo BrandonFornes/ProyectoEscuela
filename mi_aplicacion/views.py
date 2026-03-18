@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from .models import Escuela,Maestro,Alumno
-from .forms import EscuelaForm, MaestroForm
+from .forms import EscuelaForm, MaestroForm, AlumnoForm
 
 class Home(View):
     def get(self , request):
@@ -104,7 +104,8 @@ class MaestroAlta(View):
         "titulo":"MaestroFormulario",
         "subtitulo":"Formulario para dar de alta a un maestro",
         "form": MaestroForm(),
-        "fondo" : "bg-success p-3"
+        "fondo" : "bg-success p-3",
+        "mensaje" : "Guardar"
         
         }
         return render(request , "maestros/crud.html", cdx)
@@ -131,8 +132,8 @@ class MaestroEditar(View):
         "titulo":"Maestros",
         "subtitulo":"Formulario para dar de alta a un maestro",
         "form": form,
-        "fondo" : "bg-warning p-3"
-        
+        "fondo" : "bg-warning p-3",
+        "mensaje" : "Modificar"
         }
         return render(request , "maestros/crud.html", cdx)
     
@@ -152,7 +153,8 @@ class MaestroEliminar(View):
         "titulo":"Maestros",
         "subtitulo":"Formulario para dar de alta a un maestro",
         "form": form,
-        "fondo" : "bg-danger p-3"
+        "fondo" : "bg-danger p-3",
+        "mensaje" : "Eliminar"
         
         }
         return render(request , "maestros/crud.html", cdx)
@@ -164,3 +166,85 @@ class MaestroEliminar(View):
             maestro.delete()
             return redirect('maestros')
         return redirect('home')
+    
+
+# Maestros
+class Alumnos(View):
+    def get(self , request):
+        alumnos = Alumno.objects.all()
+        cdx={
+        "titulo":"Alumnos",
+        "subtitulo":"Listado de alumnos",
+        "alumnos":alumnos
+        }
+        return render(request , "alumnos/alumnos.html", cdx)
+
+class AlumnoAlta(View):
+    def get(self , request):
+        cdx={
+        "titulo":"AlumnoFormulario",
+        "subtitulo":"Formulario para dar de alta a un alumno",
+        "form": AlumnoForm(),
+        "fondo" : "bg-success p-3",
+        "mensaje" : "Guardar"
+        
+        }
+        return render(request , "alumnos/crud.html", cdx)
+    
+    def post(self,request):
+        form = AlumnoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('alumnos')
+        else :
+            cdx={
+                "titulo":"alumnos",
+                "subtitulo":"Formulario para dar de alta a un alumno",
+                "form":form,
+                "mensaje":"Error al crear alumno."
+            }
+        return render(request, 'alumnos/crud.html', cdx)
+    
+class AlumnoEditar(View):
+    def get(self , request,id):
+        alumno = Alumno.objects.filter(id=id).first()
+        form = AlumnoForm(instance=alumno)
+        cdx={
+        "titulo":"Alumnos",
+        "subtitulo":"Formulario para dar de alta a un alumno",
+        "form": form,
+        "fondo" : "bg-warning p-3",
+        "mensaje" : "Modificar"
+        }
+        return render(request , "alumnos/crud.html", cdx)
+    
+    def post(self, request, id):
+        alumno = Alumno.objects.filter(id=id).first()
+        form = AlumnoForm(request.POST, request.FILES, instance=alumno)
+        if form.is_valid():
+            form.save()
+            return redirect('alumnos')
+        return redirect('home')
+
+class AlumnoEliminar(View):
+    def get(self , request,id):
+        alumno = Alumno.objects.filter(id=id).first()
+        form = AlumnoForm(instance=alumno)
+        cdx={
+        "titulo":"Alumnos",
+        "subtitulo":"Formulario para dar de alta a un alumno",
+        "form": form,
+        "fondo" : "bg-danger p-3",
+        "mensaje" : "Eliminar"
+        
+        }
+        return render(request , "alumnos/crud.html", cdx)
+    
+    def post(self, request, id):
+        alumno = Alumno.objects.filter(id=id).first()
+        form = AlumnoForm(request.POST, request.FILES, instance=alumno)
+        if form.is_valid():
+            alumno.delete()
+            return redirect('alumnos')
+        return redirect('home')
+
