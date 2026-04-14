@@ -48,7 +48,7 @@ class MaestroForm(ModelForm):
 class AlumnoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(AlumnoForm, self).__init__(*args, **kwargs)
-        self.fields['escuela'].queryset = Escuela.objects.all()
+        self.fields['escuela'].queryset = Escuela.objects.all() 
         self.fields['maestro'].queryset = Maestro.objects.all()
         self.fields['maestro'].label_from_instance = lambda obj:obj.nombre
         self.helper = FormHelper()

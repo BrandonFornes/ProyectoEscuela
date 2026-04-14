@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 HOMBRE = 2
 MUJER = 1
@@ -23,6 +24,9 @@ class Maestro(models.Model):
     sexo = models.IntegerField(choices=SEXO , default=NEUTRO , null=False)
     fecha_nacimiento = models.DateField(null=False)
 
+    def __str__(self):
+        cadena = f"({self.id}) {self.nombre}"
+        return cadena
     
     
 class Alumno(models.Model):
@@ -31,3 +35,15 @@ class Alumno(models.Model):
     maestro = models.ForeignKey(Maestro , on_delete=models.PROTECT , null=False)
     sexo = models.IntegerField(choices=SEXO , default=NEUTRO , null=False)
     fecha_nacimiento = models.DateField(null=False)
+
+    def clean(self):
+        if self.maestro_id and self.escuela_id:
+            if self.maestro.escuela_id != self.escuela_id:
+                raise ValidationError(
+                    {"maestro": "El maestro debe pertenecer a la misma escuela que el alumno."}
+                )
+
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
