@@ -1,7 +1,43 @@
 {% extends "base.html" %}
 {% load static %}
 {% block encabezado %}
-  <h2>{{subtitulo}}<a href="{% url 'maestro_alta' %}"><img src="{%static 'images/icons8-más-32.png' %}"></a></h2>
+  {% if perms.mi_aplicacion.add_maestro %}
+    <h2>{{subtitulo}}<a href="{% url 'maestro_alta' %}"><img src="{%static 'images/icons8-más-32.png' %}"></a></h2>
+  {% endif %}
+{% endblock %}
+{% block filtros %}
+<div class="w3-container w3-margin-bottom">
+  <form method="GET" action="." class="w3-container w3-card-4 w3-light-grey w3-padding-16">
+    <h4 class="w3-border-bottom w3-border-blue">Filtrar Maestros</h4>
+    <div class="w3-row-padding">
+      
+      <div class="w3-third">
+        <label>Nombre</label>
+        <input class="w3-input w3-border" type="text" name="nombre" value="{{ request.GET.nombre }}" placeholder="Ej. Juan...">
+      </div>
+
+      <div class="w3-third">
+        <label>Escuela</label>
+        <select class="w3-select w3-border" name="escuela">
+          <option value="">Todas las escuelas</option>
+          {% for escuela in escuelas %}
+            <option value="{{ escuela.id }}" {% if request.GET.escuela == escuela.id|stringformat:"s" %}selected{% endif %}>
+              {{ escuela.siglas }} - {{ escuela.nombre }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="w3-third w3-margin-top">
+        <button type="submit" class="w3-btn w3-blue w3-round">
+           Buscar
+        </button>
+        <a href="." class="w3-btn w3-grey w3-round">Limpiar</a>
+      </div>
+
+    </div>
+  </form>
+</div>
 {% endblock %}
 {% block contenido %}
 
@@ -19,8 +55,12 @@
     </thead>
     {% for maestro in maestros%}
     <tr>
-      <td><a href="{% url 'maestro_eliminar' maestro.id%}"><img src="{%static 'images/icons8-eliminar-papelera-32.png' %}"></a>
-      <a href="{% url 'maestro_editar' maestro.id%}"><img src="{%static 'images/icons8-crear-nuevo-32.png' %}"></a></td>
+      {% if perms.mi_aplicacion.delete_maestro %}
+        <td><a href="{% url 'maestro_eliminar' maestro.id%}"><img src="{%static 'images/icons8-eliminar-papelera-32.png' %}"></a>
+      {% endif %}
+      {% if perms.mi_aplicacion.change_maestro %}
+        <a href="{% url 'maestro_editar' maestro.id%}"><img src="{%static 'images/icons8-crear-nuevo-32.png' %}"></a></td>
+      {% endif %}
       <td>{{maestro.nombre}}</td>
       <td>{{maestro.escuela.siglas}}</td>
 

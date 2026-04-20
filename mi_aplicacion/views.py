@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from .models import Escuela,Maestro,Alumno
 from .forms import EscuelaForm, MaestroForm, AlumnoForm
+from django.contrib import messages
 
 class Home(View):
     def get(self , request):
@@ -90,11 +91,26 @@ class EscuelaEliminar(View):
 # Maestros
 class Maestros(View):
     def get(self , request):
+        if not request.user.has_perm('mi_aplicacion.view_maestro'):
+            messages.error(request,f"{request.user.username} No tienes permiso para ver esta pagina")
+            return redirect('home')
         maestros = Maestro.objects.all()
+        escuelas = Escuela.objects.all()
+
+        nombre_query = request.GET.get('nombre')
+        escuela_query = request.GET.get('escuela')
+
+        if nombre_query:
+            maestros = maestros.filter(nombre__icontains=nombre_query)
+        
+        if escuela_query:
+            maestros = maestros.filter(escuela_id=escuela_query)
+            
         cdx={
         "titulo":"Maestros",
         "subtitulo":"Listado de maestros",
-        "maestros":maestros
+        "maestros":maestros,
+        "escuelas" : escuelas
         }
         return render(request , "maestros/maestros.html", cdx)
 
